@@ -505,23 +505,23 @@ input.err { border-bottom-color: #e53e3e !important; }
 
       <!-- Before You Begin checklist -->
       <div style="margin:0 auto 28px;max-width:560px;text-align:left;">
-        <div style="font-size:11px;letter-spacing:0.35em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:18px;text-align:center;">Before You Begin &mdash; Take Note</div>
+        <div style="font-size:11px;letter-spacing:0.35em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:18px;text-align:center;">Before You Begin, Take Note</div>
         <div style="display:flex;flex-direction:column;gap:14px;">
           <div style="display:flex;align-items:flex-start;gap:14px;">
             <span style="color:#8bb84a;font-size:16px;font-weight:700;flex-shrink:0;margin-top:2px;">&#10003;</span>
-            <p style="font-size:14px;line-height:1.75;color:rgba(255,255,255,0.65);margin:0;"><strong style="color:rgba(255,255,255,0.85);font-weight:600;">Use Google Chrome</strong> &mdash; Edge and other browsers may cause unexpected issues during recording.</p>
+            <p style="font-size:14px;line-height:1.75;color:rgba(255,255,255,0.65);margin:0;"><strong style="color:rgba(255,255,255,0.85);font-weight:600;">Use Google Chrome.</strong> Edge and other browsers may cause unexpected issues during recording.</p>
           </div>
           <div style="display:flex;align-items:flex-start;gap:14px;">
             <span style="color:#8bb84a;font-size:16px;font-weight:700;flex-shrink:0;margin-top:2px;">&#10003;</span>
-            <p style="font-size:14px;line-height:1.75;color:rgba(255,255,255,0.65);margin:0;"><strong style="color:rgba(255,255,255,0.85);font-weight:600;">Your answers are completely confidential</strong> &mdash; The leader who asked you to assess them will never see your individual responses. This frees you to be fully honest.</p>
+            <p style="font-size:14px;line-height:1.75;color:rgba(255,255,255,0.65);margin:0;"><strong style="color:rgba(255,255,255,0.85);font-weight:600;">Your answers are completely confidential.</strong> The leader who asked you to assess them will never see your individual responses. This frees you to be fully honest.</p>
           </div>
           <div style="display:flex;align-items:flex-start;gap:14px;">
             <span style="color:#8bb84a;font-size:16px;font-weight:700;flex-shrink:0;margin-top:2px;">&#10003;</span>
-            <p style="font-size:14px;line-height:1.75;color:rgba(255,255,255,0.65);margin:0;"><strong style="color:rgba(255,255,255,0.85);font-weight:600;">You can type or record</strong> &mdash; Each open question gives you the option to type your response or record it by voice. Use whichever feels most natural.</p>
+            <p style="font-size:14px;line-height:1.75;color:rgba(255,255,255,0.65);margin:0;"><strong style="color:rgba(255,255,255,0.85);font-weight:600;">You can type or record.</strong> Each open question gives you the option to type your response or record it by voice. Use whichever feels most natural.</p>
           </div>
           <div style="display:flex;align-items:flex-start;gap:14px;">
             <span style="color:#8bb84a;font-size:16px;font-weight:700;flex-shrink:0;margin-top:2px;">&#10003;</span>
-            <p style="font-size:14px;line-height:1.75;color:rgba(255,255,255,0.65);margin:0;"><strong style="color:rgba(255,255,255,0.85);font-weight:600;">Need help?</strong> &mdash; Email Jon Pendergrass at <a href="mailto:jpendergrass@sypnios.com" style="color:var(--accent);text-decoration:none;">jpendergrass@sypnios.com</a> for support.</p>
+            <p style="font-size:14px;line-height:1.75;color:rgba(255,255,255,0.65);margin:0;"><strong style="color:rgba(255,255,255,0.85);font-weight:600;">Need help?</strong> Email Jon Pendergrass at <a href="mailto:jpendergrass@sypnios.com" style="color:var(--accent);text-decoration:none;">jpendergrass@sypnios.com</a> for support.</p>
           </div>
         </div>
       </div>
@@ -677,7 +677,7 @@ const SECTIONS = [
       {
         id: 'q1',
         type: 'multiselect',
-        label: 'Question 1 of 13',
+        label: 'Question 1 of 14',
         text: 'What are this leader\'s most consistent strengths? Select all that genuinely apply based on what you have directly observed.',
         options: [
           'Integrity and accountability',
@@ -697,8 +697,8 @@ const SECTIONS = [
       {
         id: 'q2',
         type: 'voice_text',
-        label: 'Question 2 of 13',
-        text: 'Describe a specific moment when you saw this leader at their absolute best. What were they doing, and what did you observe about them?',
+        label: 'Question 2 of 14',
+        text: 'Think of one specific moment when you saw this leader at their best. What was happening, what did they do, and what did it reveal about their leadership?',
         placeholder: 'Describe the moment in as much detail as you can...'
       }
     ]
@@ -712,7 +712,7 @@ const SECTIONS = [
       {
         id: 'q3',
         type: 'single',
-        label: 'Question 3 of 13',
+        label: 'Question 3 of 14',
         text: 'When this leader faces a significant setback or difficult season, they most typically:',
         options: [
           'Push harder and take on more themselves',
@@ -725,8 +725,15 @@ const SECTIONS = [
       },
       {
         id: 'q4',
+        type: 'voice_text',
+        label: 'Question 4 of 14',
+        text: 'Think of one specific moment when this leader was under significant pressure. What did you observe them do? What did they appear most concerned with protecting or preserving, such as results, control, relationships, reputation, certainty, independence, or something else? What effect did their response have on others?',
+        placeholder: 'Describe the specific moment, what they did, what they seemed to be protecting, and the effect on others...'
+      },
+      {
+        id: 'q5',
         type: 'single',
-        label: 'Question 4 of 13',
+        label: 'Question 5 of 14',
         text: 'When this leader receives critical feedback or is told they are wrong, they most often:',
         options: [
           'Receive it openly and adjust quickly',
@@ -738,9 +745,9 @@ const SECTIONS = [
         ]
       },
       {
-        id: 'q5',
+        id: 'q6',
         type: 'rating',
-        label: 'Question 5 of 13',
+        label: 'Question 6 of 14',
         text: 'Rate this leader on each of the following, 1 being rarely demonstrated, 5 being consistently exemplified:',
         items: [
           { id: 'r_humility', label: 'Humility: willingness to be wrong, to learn, to serve' },
@@ -751,9 +758,9 @@ const SECTIONS = [
         ]
       },
       {
-        id: 'q6',
+        id: 'q7',
         type: 'voice_text',
-        label: 'Question 6 of 13',
+        label: 'Question 7 of 14',
         text: 'What do you wish this leader understood about how they are experienced by the people around them? Be as honest as you can, this is the most important question on this survey.',
         placeholder: 'Be specific. Your honesty here is a genuine gift to this leader...'
       }
@@ -766,9 +773,9 @@ const SECTIONS = [
     subtitle: 'Who they are when no one is watching',
     questions: [
       {
-        id: 'q7',
+        id: 'q8',
         type: 'single',
-        label: 'Question 7 of 13',
+        label: 'Question 8 of 14',
         text: 'How does this leader most often make the people around them feel?',
         options: [
           'Inspired but sometimes unclear on how to execute',
@@ -780,9 +787,9 @@ const SECTIONS = [
         ]
       },
       {
-        id: 'q8',
+        id: 'q9',
         type: 'single',
-        label: 'Question 8 of 13',
+        label: 'Question 9 of 14',
         text: 'How would you describe this leader\'s relationship to their own wellbeing, rest, margin, and self care?',
         options: [
           'They model it well and create space for others to do the same',
@@ -793,9 +800,9 @@ const SECTIONS = [
         ]
       },
       {
-        id: 'q9',
+        id: 'q10',
         type: 'voice_text',
-        label: 'Question 9 of 13',
+        label: 'Question 10 of 14',
         text: 'Describe this leader\'s impact on the culture of the team or organization you have observed. What does it actually feel like to work with or for them?',
         placeholder: 'Describe the atmosphere, the team dynamic, what people say about them...'
       }
@@ -808,9 +815,9 @@ const SECTIONS = [
     subtitle: 'Who they were made to be',
     questions: [
       {
-        id: 'q10',
+        id: 'q11',
         type: 'single',
-        label: 'Question 10 of 13',
+        label: 'Question 11 of 14',
         text: 'In terms of overall growth and self awareness, how would you describe this leader\'s trajectory over the time you have known them?',
         options: [
           'Significant and consistent growth, they are clearly becoming',
@@ -821,30 +828,29 @@ const SECTIONS = [
         ]
       },
       {
-        id: 'q11',
+        id: 'q12',
         type: 'voice_text',
-        label: 'Question 11 of 13',
+        label: 'Question 12 of 14',
         text: 'In your own words, what do you believe this leader was made to do? Not their job title. Their deepest contribution. What is the specific impact only they can make?',
         placeholder: 'Describe their purpose as you understand it from observing them...'
       },
       {
-        id: 'q12',
+        id: 'q13',
         type: 'voice_text',
-        label: 'Question 12 of 13',
+        label: 'Question 13 of 14',
         text: 'Is there anything about this leader\'s character, blind spots, or untapped potential that their coach absolutely needs to know? This is your opportunity to say the thing that matters most. It will be held in complete confidence.',
         placeholder: 'Say the thing you have been thinking but have not been asked directly...'
       },
       {
-        id: 'q13',
+        id: 'q14',
         type: 'voice_text',
-        label: 'Question 13 of 13',
+        label: 'Question 14 of 14',
         text: 'If you had to name one belief this leader seems to hold about themselves that does not match reality, either something limiting they believe that is not true, or something flattering they believe that others do not see, what would it be?',
         placeholder: 'Name it as honestly as you can. This is the most valuable data the coach will receive...'
       }
     ]
   }
 ];
-
 // ============================================================
 // INIT
 // ============================================================
@@ -852,9 +858,11 @@ window.onload = function() {
   leaderName = getLeaderName();
   const display = document.getElementById('leaderNameCover');
   const introDisplay = document.getElementById('leaderNameIntro');
+  const portraitDisplay = document.getElementById('portraitLeaderName');
   if (leaderName) {
     if (display) display.textContent = 'Completing this survey for: ' + leaderName;
     if (introDisplay) introDisplay.textContent = leaderName;
+    if (portraitDisplay) portraitDisplay.textContent = leaderName;
   } else {
     if (display) display.textContent = 'Completing a Sypnios Leadership Survey';
     if (introDisplay) introDisplay.textContent = 'this leader';
@@ -901,6 +909,8 @@ function startSurvey() {
   // Update intro screen with confirmed leader name
   const introDisplay = document.getElementById('leaderNameIntro');
   if (introDisplay) introDisplay.textContent = leaderName || 'this leader';
+  const portraitDisplay = document.getElementById('portraitLeaderName');
+  if (portraitDisplay) portraitDisplay.textContent = leaderName || 'This leader';
 
   showScreen('sIntro');
 }
