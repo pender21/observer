@@ -676,6 +676,7 @@ const SECTIONS = [
     questions: [
       {
         id: 'q1',
+        dbKey: 'q1_strengths',
         type: 'multiselect',
         label: 'Question 1 of 14',
         text: 'What are this leader\'s most consistent strengths? Select all that genuinely apply based on what you have directly observed.',
@@ -696,6 +697,7 @@ const SECTIONS = [
       },
       {
         id: 'q2',
+        dbKey: 'q2_best_moment',
         type: 'voice_text',
         label: 'Question 2 of 14',
         text: 'Think of one specific moment when you saw this leader at their best. What was happening, what did they do, and what did it reveal about their leadership?',
@@ -711,6 +713,7 @@ const SECTIONS = [
     questions: [
       {
         id: 'q3',
+        dbKey: 'q3_setback',
         type: 'single',
         label: 'Question 3 of 14',
         text: 'When this leader faces a significant setback or difficult season, they most typically:',
@@ -725,6 +728,7 @@ const SECTIONS = [
       },
       {
         id: 'q4',
+        dbKey: 'q4_pressure_moment',
         type: 'voice_text',
         label: 'Question 4 of 14',
         text: 'Think of one specific moment when this leader was under significant pressure. What did you observe them do? What did they appear most concerned with protecting or preserving, such as results, control, relationships, reputation, certainty, independence, or something else? What effect did their response have on others?',
@@ -732,6 +736,7 @@ const SECTIONS = [
       },
       {
         id: 'q5',
+        dbKey: 'q4_feedback',
         type: 'single',
         label: 'Question 5 of 14',
         text: 'When this leader receives critical feedback or is told they are wrong, they most often:',
@@ -759,6 +764,7 @@ const SECTIONS = [
       },
       {
         id: 'q7',
+        dbKey: 'q6_experienced_as',
         type: 'voice_text',
         label: 'Question 7 of 14',
         text: 'What do you wish this leader understood about how they are experienced by the people around them? Be as honest as you can, this is the most important question on this survey.',
@@ -774,6 +780,7 @@ const SECTIONS = [
     questions: [
       {
         id: 'q8',
+        dbKey: 'q7_team_feels',
         type: 'single',
         label: 'Question 8 of 14',
         text: 'How does this leader most often make the people around them feel?',
@@ -788,6 +795,7 @@ const SECTIONS = [
       },
       {
         id: 'q9',
+        dbKey: 'q8_wellbeing',
         type: 'single',
         label: 'Question 9 of 14',
         text: 'How would you describe this leader\'s relationship to their own wellbeing, rest, margin, and self care?',
@@ -801,6 +809,7 @@ const SECTIONS = [
       },
       {
         id: 'q10',
+        dbKey: 'q9_culture',
         type: 'voice_text',
         label: 'Question 10 of 14',
         text: 'Describe this leader\'s impact on the culture of the team or organization you have observed. What does it actually feel like to work with or for them?',
@@ -816,6 +825,7 @@ const SECTIONS = [
     questions: [
       {
         id: 'q11',
+        dbKey: 'q10_trajectory',
         type: 'single',
         label: 'Question 11 of 14',
         text: 'In terms of overall growth and self awareness, how would you describe this leader\'s trajectory over the time you have known them?',
@@ -829,6 +839,7 @@ const SECTIONS = [
       },
       {
         id: 'q12',
+        dbKey: 'q11_calling',
         type: 'voice_text',
         label: 'Question 12 of 14',
         text: 'In your own words, what do you believe this leader was made to do? Not their job title. Their deepest contribution. What is the specific impact only they can make?',
@@ -836,6 +847,7 @@ const SECTIONS = [
       },
       {
         id: 'q13',
+        dbKey: 'q12_blindspots',
         type: 'voice_text',
         label: 'Question 13 of 14',
         text: 'Is there anything about this leader\'s character, blind spots, or untapped potential that their coach absolutely needs to know? This is your opportunity to say the thing that matters most. It will be held in complete confidence.',
@@ -843,6 +855,7 @@ const SECTIONS = [
       },
       {
         id: 'q14',
+        dbKey: 'q13_belief',
         type: 'voice_text',
         label: 'Question 14 of 14',
         text: 'If you had to name one belief this leader seems to hold about themselves that does not match reality, either something limiting they believe that is not true, or something flattering they believe that others do not see, what would it be?',
@@ -1228,33 +1241,44 @@ function clearRecording(qId) {
 
 
 // ============================================================
+// BUILD SUPABASE PAYLOAD
+// Built from each question's dbKey, not its position, so inserting
+// or reordering questions in SECTIONS can never silently misfile
+// an answer under the wrong column again.
+// ============================================================
+function buildObserverPayload(extra) {
+  const payload = Object.assign({
+    leader_name:    leaderName || '',
+    observer_name:  obsName || '',
+    observer_email: obsEmail || ''
+  }, extra);
+
+  SECTIONS.forEach(sec => {
+    sec.questions.forEach(q => {
+      if (q.type === 'rating') return; // ratings handled separately below, unaffected by reordering
+      if (!q.dbKey) return; // question has no assigned Supabase column yet
+      const raw = answers[q.id];
+      payload[q.dbKey] = Array.isArray(raw) ? raw.join(', ') : (raw || '');
+    });
+  });
+
+  payload.r_humility   = answers['r_humility']   ? parseInt(answers['r_humility'])   : null;
+  payload.r_integrity  = answers['r_integrity']  ? parseInt(answers['r_integrity'])  : null;
+  payload.r_generosity = answers['r_generosity'] ? parseInt(answers['r_generosity']) : null;
+  payload.r_trust      = answers['r_trust']      ? parseInt(answers['r_trust'])      : null;
+  payload.r_selfaware  = answers['r_selfaware']  ? parseInt(answers['r_selfaware'])  : null;
+
+  return payload;
+}
+
+// ============================================================
 // SUBMIT
 // ============================================================
 async function autoSaveObserver(sectionIdx) {
   try {
-    const payload = {
-      leader_name:    leaderName || '',
-      observer_name:  obsName || '',
-      observer_email: obsEmail || '',
-      completed_at:   'IN PROGRESS — Section ' + (sectionIdx + 1) + ' of ' + SECTIONS.length,
-      q1_strengths:   Array.isArray(answers['q1']) ? answers['q1'].join(', ') : (answers['q1'] || ''),
-      q2_best_moment: answers['q2'] || '',
-      q3_setback:     answers['q3'] || '',
-      q4_feedback:    answers['q4'] || '',
-      r_humility:     answers['r_humility']  ? parseInt(answers['r_humility'])  : null,
-      r_integrity:    answers['r_integrity'] ? parseInt(answers['r_integrity']) : null,
-      r_generosity:   answers['r_generosity']? parseInt(answers['r_generosity']): null,
-      r_trust:        answers['r_trust']     ? parseInt(answers['r_trust'])     : null,
-      r_selfaware:    answers['r_selfaware'] ? parseInt(answers['r_selfaware']) : null,
-      q6_experienced_as: answers['q6'] || '',
-      q7_team_feels:  answers['q7'] || '',
-      q8_wellbeing:   answers['q8'] || '',
-      q9_culture:     answers['q9'] || '',
-      q10_trajectory: answers['q10'] || '',
-      q11_calling:    answers['q11'] || '',
-      q12_blindspots: answers['q12'] || '',
-      q13_belief:     answers['q13'] || ''
-    };
+    const payload = buildObserverPayload({
+      completed_at: 'IN PROGRESS — Section ' + (sectionIdx + 1) + ' of ' + SECTIONS.length
+    });
 
     await fetch(OBS_SUPABASE_URL + '/rest/v1/observer_responses?on_conflict=observer_email', {
       method: 'POST',
@@ -1293,29 +1317,45 @@ async function submitSurvey() {
     r_selfaware: 'Self Awareness'
   };
 
-  let summary = '';
-  SECTIONS.forEach(sec => {
-    summary += '\n=== ' + sec.title.toUpperCase() + ' ===\n';
+  // Build one text block per SECTION, never per fixed character count,
+  // so a growing survey can never get sliced apart mid-question again.
+  const sectionBlocks = SECTIONS.map(sec => {
+    let block = '\n=== ' + sec.title.toUpperCase() + ' ===\n';
     sec.questions.forEach(q => {
-      summary += '\n' + q.label + ': ' + q.text + '\n';
+      block += '\n' + q.label + ': ' + q.text + '\n';
       if (q.type === 'rating' && q.items) {
         q.items.forEach(item => {
-          summary += '  ' + ratingLabels[item.id] + ': ' + (answers[item.id] || 'Not rated') + '/5\n';
+          block += '  ' + ratingLabels[item.id] + ': ' + (answers[item.id] || 'Not rated') + '/5\n';
         });
       } else if (q.type === 'multiselect') {
         const vals = answers[q.id];
-        summary += 'SELECTED: ' + (Array.isArray(vals) ? vals.join(', ') : 'None selected') + '\n';
+        block += 'SELECTED: ' + (Array.isArray(vals) ? vals.join(', ') : 'None selected') + '\n';
       } else {
-        summary += 'RESPONSE: ' + (answers[q.id] || '(No response)') + '\n';
+        block += 'RESPONSE: ' + (answers[q.id] || '(No response)') + '\n';
       }
     });
+    return block;
   });
+
+  // Pack whole section blocks into Formspree-sized parts. A split can only
+  // ever land between sections, never inside one, regardless of how long
+  // the survey grows in the future.
+  const MAX_PART_LENGTH = 3000;
+  const parts = [];
+  let current = '';
+  sectionBlocks.forEach(block => {
+    if (current && (current.length + block.length) > MAX_PART_LENGTH) {
+      parts.push(current);
+      current = '';
+    }
+    current += block;
+  });
+  if (current) parts.push(current);
 
   const statusEl = document.getElementById('sendStatus');
   if (statusEl) { statusEl.style.display = 'block'; statusEl.textContent = 'Sending responses...'; }
 
   try {
-    // Split into two submissions to stay under Formspree size limits
     const baseInfo = {
       _subject: 'Observer Survey, ' + (leaderName || 'Unknown Leader') + ' assessed by ' + obsName,
       type: 'OBSERVER SURVEY',
@@ -1323,7 +1363,8 @@ async function submitSurvey() {
       observer_email: obsEmail,
       leader_name: leaderName || 'Not specified',
       submitted_at: new Date().toLocaleString(),
-      responses_part1: summary.substring(0, 3000)
+      total_parts: parts.length,
+      responses_part1: parts[0] || ''
     };
 
     const res = await fetch(FORMSPREE, {
@@ -1332,15 +1373,16 @@ async function submitSurvey() {
       body: JSON.stringify(baseInfo)
     });
 
-    // If there is more content, send part 2
-    if (summary.length > 3000) {
+    // Send any remaining parts, each its own email, numbered sequentially.
+    // No longer hardcoded to exactly "part 2" -- scales to however many parts exist.
+    for (let i = 1; i < parts.length; i++) {
+      const partKey = 'responses_part' + (i + 1);
+      const partPayload = { _subject: 'Observer Survey PART ' + (i + 1) + ', ' + (leaderName || 'Unknown Leader') + ' / ' + obsName };
+      partPayload[partKey] = parts[i];
       await fetch(FORMSPREE, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({
-          _subject: 'Observer Survey PART 2, ' + (leaderName || 'Unknown Leader') + ' / ' + obsName,
-          responses_part2: summary.substring(3000)
-        })
+        body: JSON.stringify(partPayload)
       });
     }
 
@@ -1349,29 +1391,9 @@ async function submitSurvey() {
       statusEl.style.color = 'var(--accent)';
       // Final save to Supabase with completed_at timestamp
       try {
-        const finalPayload = {
-          leader_name:    leaderName || '',
-          observer_name:  obsName || '',
-          observer_email: obsEmail || '',
-          completed_at:   new Date().toLocaleString(),
-          q1_strengths:   Array.isArray(answers['q1']) ? answers['q1'].join(', ') : (answers['q1'] || ''),
-          q2_best_moment: answers['q2'] || '',
-          q3_setback:     answers['q3'] || '',
-          q4_feedback:    answers['q4'] || '',
-          r_humility:     answers['r_humility']  ? parseInt(answers['r_humility'])  : null,
-          r_integrity:    answers['r_integrity'] ? parseInt(answers['r_integrity']) : null,
-          r_generosity:   answers['r_generosity']? parseInt(answers['r_generosity']): null,
-          r_trust:        answers['r_trust']     ? parseInt(answers['r_trust'])     : null,
-          r_selfaware:    answers['r_selfaware'] ? parseInt(answers['r_selfaware']) : null,
-          q6_experienced_as: answers['q6'] || '',
-          q7_team_feels:  answers['q7'] || '',
-          q8_wellbeing:   answers['q8'] || '',
-          q9_culture:     answers['q9'] || '',
-          q10_trajectory: answers['q10'] || '',
-          q11_calling:    answers['q11'] || '',
-          q12_blindspots: answers['q12'] || '',
-          q13_belief:     answers['q13'] || ''
-        };
+        const finalPayload = buildObserverPayload({
+          completed_at: new Date().toLocaleString()
+        });
         await fetch(OBS_SUPABASE_URL + '/rest/v1/observer_responses?on_conflict=observer_email', {
           method: 'POST',
           headers: {
